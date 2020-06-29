@@ -3,13 +3,12 @@ using Object = UnityEngine.Object;
 
 namespace Validation
 {
-    public sealed class ComponentValidationError : Exception
+    public sealed class ComponentValidationError : ComponentValidationErrorBase
     {
-        public override string Message { get; }
-
-        public ComponentValidationError(Object context, Type componentType)
+        public ComponentValidationError(Object context, Type componentType) : 
+            base(FormatMessage(context, componentType) + ".")
         {
-            Message = $"Component of type {componentType.Name} was not found in {context.name}.";
+            
         }
     }
 }

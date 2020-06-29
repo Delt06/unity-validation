@@ -22,7 +22,7 @@ namespace Validation
             component = context.GetComponentInParent<T>();
             if (component != null) return;
 
-            throw new ComponentValidationError(context, typeof(T));
+            throw new ParentComponentValidationError(context, typeof(T));
         }
 
         public static void RequireInChildren<T>([NotNull] this GameObject context, out T component) where T : class
@@ -32,7 +32,7 @@ namespace Validation
             component = context.GetComponentInChildren<T>();
             if (component != null) return;
 
-            throw new ComponentValidationError(context, typeof(T));
+            throw new ChildrenComponentValidationError(context, typeof(T));
         }
     }
 }
