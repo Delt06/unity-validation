@@ -1,14 +1,15 @@
 ﻿using UnityEngine;
 using Validation;
 
-public class Demo : MonoBehaviour
-{
-    public SpriteRenderer SpriteRenderer => _spriteRenderer;
 
+public class Demo : MonoBehaviour
+{ 
     private void Awake()
     {
-        gameObject.Require(out _spriteRenderer);
+        this.Require(out _spriteRenderer);
+        this.RequireOnScene(out _camera);
     }
 
     private SpriteRenderer _spriteRenderer;
+    private Camera _camera;
 }
