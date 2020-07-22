@@ -16,7 +16,7 @@ namespace Validation
             throw new ComponentValidationError(context, typeof(T));
         }
         
-        public static void Require<T>([NotNull] this Behaviour context, out T component) where T : class
+        public static void Require<T>([NotNull] this Component context, out T component) where T : class
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
@@ -35,7 +35,7 @@ namespace Validation
             throw new ParentComponentValidationError(context, typeof(T));
         }
         
-        public static void RequireInParent<T>([NotNull] this Behaviour context, out T component) where T : class
+        public static void RequireInParent<T>([NotNull] this Component context, out T component) where T : class
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             
@@ -55,7 +55,7 @@ namespace Validation
             throw new ChildrenComponentValidationError(context, typeof(T));
         }
         
-        public static void RequireInChildren<T>([NotNull] this Behaviour context, out T component) where T : class
+        public static void RequireInChildren<T>([NotNull] this Component context, out T component) where T : class
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             
