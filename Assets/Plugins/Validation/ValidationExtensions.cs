@@ -72,15 +72,15 @@ namespace Validation
             component = Object.FindObjectOfType<T>();
             if (component != null) return;
 
-            throw new SceneComponentValidationError(typeof(T), context);
+            throw new AnywhereComponentValidationError(typeof(T), context);
         }
         
-        public static void RequireOnScene<T>(out T component) where T : Object
+        public static void RequireAnywhere<T>(out T component) where T : Object
         {
             component = Object.FindObjectOfType<T>();
             if (component != null) return;
 
-            throw new SceneComponentValidationError(typeof(T));
+            throw new AnywhereComponentValidationError(typeof(T));
         }
     }
 }

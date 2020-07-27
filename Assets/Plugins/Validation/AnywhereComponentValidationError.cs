@@ -4,16 +4,16 @@ using Object = UnityEngine.Object;
 
 namespace Validation
 {
-    public sealed class SceneComponentValidationError : ComponentValidationErrorBase
+    public sealed class AnywhereComponentValidationError : ComponentValidationErrorBase
     {
-        public SceneComponentValidationError(Type componentType, [CanBeNull] Object context = null) : 
+        public AnywhereComponentValidationError(Type componentType, [CanBeNull] Object context = null) : 
             base(FormatMessage(componentType, context))
         {
         }
 
         private static string FormatMessage(Type componentType, [CanBeNull] Object context = null)
         {
-            var baseMessage = $"Component of type {componentType.Name} was not found on the scene";
+            var baseMessage = $"Component of type {componentType.Name} was not found";
 
             if (context != null)
             {
