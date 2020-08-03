@@ -2,12 +2,15 @@
 using Validation;
 
 
+[RequireComponent(typeof(SpriteRenderer))]
+[RequireComponentAnywhere(typeof(Camera))]
+[RequireComponentAnywhere(typeof(MeshCollider))]
 public class Demo : MonoBehaviour
 { 
     private void Awake()
     {
         this.Require(out _spriteRenderer);
-        this.RequireOnScene(out _camera);
+        this.RequireAnywhere(out _camera);
     }
 
     private SpriteRenderer _spriteRenderer;

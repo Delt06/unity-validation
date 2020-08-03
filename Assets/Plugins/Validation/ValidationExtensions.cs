@@ -65,7 +65,7 @@ namespace Validation
             throw new ChildrenComponentValidationError(context, typeof(T));
         }
 
-        public static void RequireOnScene<T>([NotNull] this Object context, out T component) where T : Object
+        public static void RequireAnywhere<T>([NotNull] this Object context, out T component) where T : Object
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             
