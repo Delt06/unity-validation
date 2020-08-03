@@ -7,139 +7,139 @@ using Object = UnityEngine.Object;
 
 namespace Validation.Editor
 {
-    public static class AutoValidator 
-    {
-        [MenuItem("Auto Validator/Run"), InitializeOnEnterPlayMode]
-        public static void Run()
-        {
-            var objects = Object.FindObjectsOfType<Object>();
+	public static class AutoValidator
+	{
+		[MenuItem("Auto Validator/Run"), InitializeOnEnterPlayMode]
+		public static void Run()
+		{
+			var objects = Object.FindObjectsOfType<Object>();
 
-            objects.Validate(out var invalid);
-            objects.ValidateInParents(out var invalidInParents);
-            objects.ValidateInChildren(out var invalidInChildren);
-            objects.ValidateAnywhere(out var invalidAnywhere);
+			objects.Validate(out var invalid);
+			objects.ValidateInParents(out var invalidInParents);
+			objects.ValidateInChildren(out var invalidInChildren);
+			objects.ValidateAnywhere(out var invalidAnywhere);
 
-            var invalidCount = invalid
-                .Concat(invalidInParents)
-                .Concat(invalidInChildren)
-                .Concat(invalidAnywhere)
-                .Distinct()
-                .Count();
-            
-            if (invalidCount == 0)
-                Debug.Log("Validation passed successfully.");
-            else
-                Debug.LogError($"Validation failed. {invalidCount} invalid components were detected.");
-        }
+			var invalidCount = invalid
+				.Concat(invalidInParents)
+				.Concat(invalidInChildren)
+				.Concat(invalidAnywhere)
+				.Distinct()
+				.Count();
 
-        private static void Validate(this IEnumerable<Object> objects, out IEnumerable<Object> invalid)
-        {
-            var invalidList = new List<Object>();
-            
-            foreach (var obj in objects.OfType<Component>())
-            {
-                var attributes = Attribute.GetCustomAttributes(obj.GetType())
-                    .OfType<RequireComponent>().ToArray();
-                if (attributes.Length == 0) continue;
+			if (invalidCount == 0)
+				Debug.Log("Validation passed successfully.");
+			else
+				Debug.LogError($"Validation failed. {invalidCount} invalid components were detected.");
+		}
 
-                foreach (var attribute in attributes)
-                {
-                    var types = new[] {attribute.m_Type0, attribute.m_Type1, attribute.m_Type2}
-                        .Where(a => a != null);
-                    
-                    foreach (var type in types)
-                    {
-                        if (!obj.TryGetComponent(type, out _))
-                        {
-                            Debug.LogError($"{obj} lacks {type} on it.", obj);
-                            invalidList.Add(obj);
-                        }
-                    }
-                }
-            }
+		private static void Validate(this IEnumerable<Object> objects, out IEnumerable<Object> invalid)
+		{
+			var invalidList = new List<Object>();
 
-            invalid = invalidList.Distinct();
-        }
-        
-        private static void ValidateInParents(this IEnumerable<Object> objects, out IEnumerable<Object> invalid)
-        {
-            var invalidList = new List<Object>();
-            
-            foreach (var obj in objects.OfType<Component>())
-            {
-                var attributes = Attribute.GetCustomAttributes(obj.GetType())
-                    .OfType<RequireComponentInParent>().ToArray();
-                if (attributes.Length == 0) continue;
+			foreach (var obj in objects.OfType<Component>())
+			{
+				var attributes = Attribute.GetCustomAttributes(obj.GetType())
+					.OfType<RequireComponent>().ToArray();
+				if (attributes.Length == 0) continue;
 
-                foreach (var attribute in attributes)
-                {
-                    var type = attribute.Type;
-                    if (type == null) continue;
+				foreach (var attribute in attributes)
+				{
+					var types = new[] {attribute.m_Type0, attribute.m_Type1, attribute.m_Type2}
+						.Where(a => a != null);
 
-                    var component = obj.GetComponentInParent(type);
-                    if (component == null)
-                    {
-                        Debug.LogError($"{obj} lacks {type} on it or its parent.", obj);
-                        invalidList.Add(obj);
-                    }
-                }
-            }
-            
-            invalid = invalidList.Distinct();
-        }
-        
-        private static void ValidateInChildren(this IEnumerable<Object> objects, out IEnumerable<Object> invalid)
-        {
-            var invalidList = new List<Object>();
-            
-            foreach (var obj in objects.OfType<Component>())
-            {
-                var attributes = Attribute.GetCustomAttributes(obj.GetType())
-                    .OfType<RequireComponentInChildren>().ToArray();
-                if (attributes.Length == 0) continue;
+					foreach (var type in types)
+					{
+						if (!obj.TryGetComponent(type, out _))
+						{
+							Debug.LogError($"{obj} lacks {type} on it.", obj);
+							invalidList.Add(obj);
+						}
+					}
+				}
+			}
 
-                foreach (var attribute in attributes)
-                {
-                    var type = attribute.Type;
-                    if (type == null) continue;
+			invalid = invalidList.Distinct();
+		}
 
-                    var component = obj.GetComponentInChildren(type);
-                    if (component == null)
-                    {
-                        Debug.LogError($"{obj} lacks {type} on it or its children.", obj);
-                        invalidList.Add(obj);
-                    }
-                }
-            }
-            
-            invalid = invalidList.Distinct();
-        }
-        
-        private static void ValidateAnywhere(this IEnumerable<Object> objects, out IEnumerable<Object> invalid)
-        {
-            var invalidList = new List<Object>();
-            
-            foreach (var obj in objects.OfType<Component>())
-            {
-                var attributes = Attribute.GetCustomAttributes(obj.GetType())
-                    .OfType<RequireComponentAnywhere>().ToArray();
-                if (attributes.Length == 0) continue;
+		private static void ValidateInParents(this IEnumerable<Object> objects, out IEnumerable<Object> invalid)
+		{
+			var invalidList = new List<Object>();
 
-                foreach (var attribute in attributes)
-                {
-                    var type = attribute.Type;
-                    if (type == null) continue;
+			foreach (var obj in objects.OfType<Component>())
+			{
+				var attributes = Attribute.GetCustomAttributes(obj.GetType())
+					.OfType<RequireComponentInParent>().ToArray();
+				if (attributes.Length == 0) continue;
 
-                    var component = Object.FindObjectOfType(type);
-                    if (component == null)
-                    {
-                        Debug.LogError($"{obj} lacks {type} anywhere.", obj);
-                        invalidList.Add(obj);
-                    }
-                }
-            }
-            
-            invalid = invalidList.Distinct();
-        }
-    }
+				foreach (var attribute in attributes)
+				{
+					var type = attribute.Type;
+					if (type == null) continue;
+
+					var component = obj.GetComponentInParent(type);
+					if (component == null)
+					{
+						Debug.LogError($"{obj} lacks {type} on it or its parent.", obj);
+						invalidList.Add(obj);
+					}
+				}
+			}
+
+			invalid = invalidList.Distinct();
+		}
+
+		private static void ValidateInChildren(this IEnumerable<Object> objects, out IEnumerable<Object> invalid)
+		{
+			var invalidList = new List<Object>();
+
+			foreach (var obj in objects.OfType<Component>())
+			{
+				var attributes = Attribute.GetCustomAttributes(obj.GetType())
+					.OfType<RequireComponentInChildren>().ToArray();
+				if (attributes.Length == 0) continue;
+
+				foreach (var attribute in attributes)
+				{
+					var type = attribute.Type;
+					if (type == null) continue;
+
+					var component = obj.GetComponentInChildren(type);
+					if (component == null)
+					{
+						Debug.LogError($"{obj} lacks {type} on it or its children.", obj);
+						invalidList.Add(obj);
+					}
+				}
+			}
+
+			invalid = invalidList.Distinct();
+		}
+
+		private static void ValidateAnywhere(this IEnumerable<Object> objects, out IEnumerable<Object> invalid)
+		{
+			var invalidList = new List<Object>();
+
+			foreach (var obj in objects.OfType<Component>())
+			{
+				var attributes = Attribute.GetCustomAttributes(obj.GetType())
+					.OfType<RequireComponentAnywhere>().ToArray();
+				if (attributes.Length == 0) continue;
+
+				foreach (var attribute in attributes)
+				{
+					var type = attribute.Type;
+					if (type == null) continue;
+
+					var component = Object.FindObjectOfType(type);
+					if (component == null)
+					{
+						Debug.LogError($"{obj} lacks {type} anywhere.", obj);
+						invalidList.Add(obj);
+					}
+				}
+			}
+
+			invalid = invalidList.Distinct();
+		}
+	}
 }

@@ -2,14 +2,11 @@
 
 namespace Validation
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class RequireComponentAnywhere : Attribute
-    {
-        public Type Type { get; }
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+	public class RequireComponentAnywhere : Attribute
+	{
+		public Type Type { get; }
 
-        public RequireComponentAnywhere(Type type)
-        {
-            Type = type;
-        }
-    }
+		public RequireComponentAnywhere(Type type) => Type = type;
+	}
 }
