@@ -10,8 +10,10 @@ public class Demo : MonoBehaviour
 	{
 		this.Require(out _spriteRenderer);
 		this.RequireAnywhere(out _camera);
+		this.RequireInParent(out _collider);
 	}
 
 	private SpriteRenderer _spriteRenderer;
 	private Camera _camera;
+	private BoxCollider _collider;
 }
