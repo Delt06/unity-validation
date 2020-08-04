@@ -1,19 +1,31 @@
 ﻿using UnityEngine;
 using Validation;
 
-
-[RequireComponent(typeof(SpriteRenderer)), RequireComponentAnywhere(typeof(Camera)),
- RequireComponentAnywhere(typeof(MeshCollider))]
 public class Demo : MonoBehaviour
 {
-	private void Awake()
+	private void Update()
 	{
-		this.Require(out _spriteRenderer);
-		this.RequireAnywhere(out _camera);
-		this.RequireInParent(out _collider);
+		_camera.backgroundColor = Time.frameCount % 120 < 64 ? Color.white : Color.gray;
+		var color = _spriteRenderer.color;
+		color.a = Mathf.PingPong(Time.time, 1f);
+		_spriteRenderer.color = color;
 	}
 
-	private SpriteRenderer _spriteRenderer;
-	private Camera _camera;
-	private BoxCollider _collider;
+	private void Start()
+	{
+		_meshFilter.sharedMesh = new Mesh();
+	}
+
+	private void Awake()
+	{
+		// called to populate all the fields
+		this.ResolveDependencies();
+	}
+
+	// must be anywhere
+	[Dependency(Source.Global)] private readonly Camera _camera = default;
+	// must be attached to this GameObject
+	[Dependency] private readonly SpriteRenderer _spriteRenderer = default;
+	// must be attached to some of the object's children (including the object itself)
+	[Dependency(Source.FromChildren)] private readonly MeshFilter _meshFilter = default; 
 }
