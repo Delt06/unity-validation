@@ -14,7 +14,7 @@ namespace Validation.Editor
 		public static void Run()
 		{
 			var objects = Object.FindObjectsOfType<Component>();
-			
+
 			var invalid = new List<Component>();
 
 			foreach (var context in objects)
@@ -25,8 +25,19 @@ namespace Validation.Editor
 				foreach (var field in fields)
 				{
 					var attribute = field.GetCustomAttribute<DependencyAttribute>();
-					
+
 					if (!ComponentIsAttached(context, attribute.Source, field.FieldType))
+						invalid.Add(context);
+				}
+
+				foreach (var property in type.GetDependencyProperties())
+				{
+					var attribute = property.GetCustomAttribute<DependencyAttribute>();
+
+					if (!property.CanWrite)
+						throw new InvalidOperationException($"Property {property} of {type} has no setter.");
+
+					if (!ComponentIsAttached(context, attribute.Source, property.PropertyType))
 						invalid.Add(context);
 				}
 			}
@@ -48,7 +59,8 @@ namespace Validation.Editor
 				case Source.Local: return context.GetComponent(type) != null;
 				case Source.FromParents: return context.GetComponentInParent(type) != null;
 				case Source.FromChildren: return context.GetComponentsInChildren(type) != null;
-				case Source.Global when typeof(Object).IsAssignableFrom(type): return Object.FindObjectsOfType(type) != null;
+				case Source.Global
+					when typeof(Object).IsAssignableFrom(type): return Object.FindObjectsOfType(type) != null;
 				case Source.Global: throw ValidationExtensions.NewGlobalDependencyIllegalTypeException(type, context);
 				default: throw new ArgumentOutOfRangeException();
 			}

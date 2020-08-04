@@ -2,7 +2,7 @@
 
 namespace Validation
 {
-	[AttributeUsage(AttributeTargets.Field)]
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 	public sealed class DependencyAttribute : Attribute
 	{
 		public Source Source { get; }

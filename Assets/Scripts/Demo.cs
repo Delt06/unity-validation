@@ -24,8 +24,13 @@ public class Demo : MonoBehaviour
 
 	// must be anywhere
 	[Dependency(Source.Global)] private readonly Camera _camera = default;
+
 	// must be attached to this GameObject
 	[Dependency] private readonly SpriteRenderer _spriteRenderer = default;
+
 	// must be attached to some of the object's children (including the object itself)
-	[Dependency(Source.FromChildren)] private readonly MeshFilter _meshFilter = default; 
+	[Dependency(Source.FromChildren)] private readonly MeshFilter _meshFilter = default;
+
+	// works with properties (setter is required)
+	[Dependency(Source.FromChildren)] private MeshFilter MeshFilter { get; set; }
 }
