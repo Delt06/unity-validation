@@ -143,12 +143,28 @@ namespace Validation
 				var value = Resolve(context, field.FieldType, attribute.Source);
 				field.SetValue(context, value);
 			}
-		}
 
+			foreach (var property in type.GetDependencyProperties())
+			{
+				var attribute = property.GetCustomAttribute<DependencyAttribute>();
+				var value = Resolve(context, property.PropertyType, attribute.Source);
+
+				if (property.CanWrite)
+					property.SetValue(context, value);
+				else
+					throw new InvalidOperationException($"Property {property} of {type} has no setter.");
+			}
+		}
 
 		public static IEnumerable<FieldInfo> GetDependencyFields(this Type type)
 		{
 			return type.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
+				.Where(f => Attribute.IsDefined(f, typeof(DependencyAttribute)));
+		}
+
+		public static IEnumerable<PropertyInfo> GetDependencyProperties(this Type type)
+		{
+			return type.GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
 				.Where(f => Attribute.IsDefined(f, typeof(DependencyAttribute)));
 		}
 
