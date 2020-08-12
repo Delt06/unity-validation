@@ -42,14 +42,27 @@ namespace Validation.Editor
 				}
 			}
 
-			var invalidCount = invalid
+			var uniqueInvalid = invalid
 				.Distinct()
-				.Count();
+				.ToList();
 
-			if (invalidCount == 0)
+			if (uniqueInvalid.Count == 0)
+			{
 				Debug.Log("Validation passed successfully.");
+			}
 			else
-				Debug.LogError($"Validation failed. {invalidCount} invalid components were detected.");
+			{
+				Debug.LogError($"Validation failed. {uniqueInvalid.Count} invalid component(s) were detected. Among them:");
+
+				for (var index = 0; index < uniqueInvalid.Count && index < PrintedComponentsCount; index++)
+				{
+					var component = uniqueInvalid[index];
+					Debug.LogError(component, component);
+				}
+				
+				if (uniqueInvalid.Count > PrintedComponentsCount)
+					Debug.LogError($"And {uniqueInvalid.Count - PrintedComponentsCount} more...");
+			}
 		}
 
 		private static bool ComponentIsAttached(Component context, Source source, Type type)
@@ -65,5 +78,7 @@ namespace Validation.Editor
 				default: throw new ArgumentOutOfRangeException();
 			}
 		}
+
+		private const int PrintedComponentsCount = 3;
 	}
 }
