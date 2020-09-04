@@ -52,14 +52,15 @@ namespace Validation.Editor
 			}
 			else
 			{
-				Debug.LogError($"Validation failed. {uniqueInvalid.Count} invalid component(s) were detected. Among them:");
+				Debug.LogError(
+					$"Validation failed. {uniqueInvalid.Count} invalid component(s) were detected. Among them:");
 
 				for (var index = 0; index < uniqueInvalid.Count && index < PrintedComponentsCount; index++)
 				{
 					var component = uniqueInvalid[index];
 					Debug.LogError(component, component);
 				}
-				
+
 				if (uniqueInvalid.Count > PrintedComponentsCount)
 					Debug.LogError($"And {uniqueInvalid.Count - PrintedComponentsCount} more...");
 			}
