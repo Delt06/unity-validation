@@ -2,8 +2,5 @@
 
 namespace Validation
 {
-	public sealed class Anchor : MonoBehaviour, IAnchor
-	{
-		
-	}
+	public sealed class Anchor : MonoBehaviour, IAnchor { }
 }
