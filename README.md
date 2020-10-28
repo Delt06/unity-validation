@@ -7,7 +7,7 @@ A small library that makes object dependencies more explicit. Consists of two pa
 An example of usage is [here](Assets/Scripts/Demo.cs).
 
 ## Runtime part
-The runtime part is made of extensions methods: `Require`, `RequireInParent`, `RequireInChildren`, `RequireAnywhere`.
+The runtime part is made of extensions methods: `Require`, `RequireInParent`, `RequireInChildren`, `RequireAnywhere`, `RequireFromAnchor`.
 
 Basically, they are wrappers around the following Unity's built-in methods respectively: `GetComponent`, `GetComponentInParent`, `GetComponentInChildren`, `FindObjectOfType`.
 
@@ -17,6 +17,8 @@ Main differences from those built-in methods:
 
 To make the process more automatic, additional method `ResolveDependecies` was introduced. When called, it populates all the fields with the `[Dependency]` attribute.
 To distinguish between different modes (local, parents, children, and global) it has a parameter called `source`.
+
+An exception is `RequireFromAnchor`: is firstly looks for a component with the `IAnchor` interface. And then, in the children of the anchor.
 
 ## Editor part a.k.a. Auto Validator
 
