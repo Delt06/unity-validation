@@ -76,6 +76,13 @@ namespace Validation.Editor
 				case Source.Global
 					when typeof(Object).IsAssignableFrom(type): return Object.FindObjectsOfType(type) != null;
 				case Source.Global: throw ValidationExtensions.NewGlobalDependencyIllegalTypeException(type, context);
+				case Source.Anchor:
+				{
+					var anchor = context.GetComponentInParent<IAnchor>();
+					if (anchor == null) return false;
+
+					return anchor.gameObject.GetComponentInChildren(type) != null;
+				}
 				default: throw new ArgumentOutOfRangeException();
 			}
 		}

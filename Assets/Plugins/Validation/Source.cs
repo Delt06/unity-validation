@@ -5,6 +5,7 @@
 		Local = 0,
 		FromParents,
 		FromChildren,
-		Global
+		Global,
+		Anchor
 	}
 }

@@ -10,6 +10,40 @@ namespace Validation
 {
 	public static class ValidationExtensions
 	{
+		public static void RequireFromAnchor<T>([NotNull] this Component context, out T component) where T : class
+		{
+			if (context == null) throw new ArgumentNullException(nameof(context));
+
+			context.RequireInParent(out IAnchor anchor);
+			anchor.gameObject.RequireInChildren(out component);
+		}
+		
+		public static void RequireFromAnchor<T>([NotNull] this GameObject context, out T component) where T : class
+		{
+			if (context == null) throw new ArgumentNullException(nameof(context));
+
+			context.RequireInParent(out IAnchor anchor);
+			anchor.gameObject.RequireInChildren(out component);
+		}
+		
+		public static void RequireFromAnchor([NotNull] this Component context, [NotNull] Type type, out Component component)
+		{
+			if (context == null) throw new ArgumentNullException(nameof(context));
+			if (type == null) throw new ArgumentNullException(nameof(type));
+
+			context.RequireInParent(out IAnchor anchor);
+			anchor.gameObject.RequireInChildren(type, out component);
+		}
+		
+		public static void RequireFromAnchor([NotNull] this GameObject context, [NotNull] Type type, out Component component)
+		{
+			if (context == null) throw new ArgumentNullException(nameof(context));
+			if (type == null) throw new ArgumentNullException(nameof(type));
+
+			context.RequireInParent(out IAnchor anchor);
+			anchor.gameObject.RequireInChildren(out component);
+		}
+		
 		public static void Require<T>([NotNull] this GameObject context, out T component) where T : class
 		{
 			if (context == null) throw new ArgumentNullException(nameof(context));
@@ -91,6 +125,18 @@ namespace Validation
 		}
 
 		private static void RequireInChildren([NotNull] this Component context, [NotNull] Type type,
+			out Component component)
+		{
+			if (context == null) throw new ArgumentNullException(nameof(context));
+			if (type == null) throw new ArgumentNullException(nameof(type));
+
+			component = context.GetComponentInChildren(type);
+			if (component != null) return;
+
+			throw new ChildrenComponentValidationError(context, type);
+		}
+		
+		private static void RequireInChildren([NotNull] this GameObject context, [NotNull] Type type,
 			out Component component)
 		{
 			if (context == null) throw new ArgumentNullException(nameof(context));
@@ -197,6 +243,12 @@ namespace Validation
 				}
 
 				case Source.Global: throw NewGlobalDependencyIllegalTypeException(type, context);
+
+				case Source.Anchor:
+				{
+					context.RequireFromAnchor(type, out var component);
+					return component;
+				}
 
 				default: throw new ArgumentOutOfRangeException(nameof(source), source, null);
 			}
